@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "761452460484",
+    "firebase_url": "https://pingolearn-ab963-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pingolearn-ab963",
+    "storage_bucket": "pingolearn-ab963.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761452460484:android:80b49c4eb9e82e074d0c91",
+        "android_client_info": {
+          "package_name": "com.pingolearn.assessment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKoEuI8RajFXZybjcOOB_v1NoQFRlMEj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
