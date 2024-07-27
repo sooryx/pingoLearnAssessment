@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:lottie/lottie.dart';
-import 'package:pingolearn/Constants/customthemes.dart';
-import 'package:toastification/toastification.dart';
+
+import'package:pingolearn/Constants/imports.dart';
 
 customSuccessToast(BuildContext context, String message) {
   toastification.show(
@@ -75,7 +71,7 @@ customRandomToast(BuildContext context, String message) {
   );
 }
 
-showLoadingDialog(BuildContext context, String? message,LottieBuilder? lottie) {
+showLoadingDialog(BuildContext context, String? message,) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -92,7 +88,7 @@ showLoadingDialog(BuildContext context, String? message,LottieBuilder? lottie) {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              lottie ?? SpinKitDualRing(color: CustomColors.primaryColor),
+               const CircularProgressIndicator(color: CustomColors.primaryColor),
               const SizedBox(height: 20.0),
               Text(
                 message ?? "Loading...",

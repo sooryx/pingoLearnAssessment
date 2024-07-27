@@ -1,4 +1,4 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import'package:pingolearn/Constants/imports.dart';
 
 class RemoteConfigService {
   final FirebaseRemoteConfig _remoteConfig;
@@ -8,8 +8,8 @@ class RemoteConfigService {
 
   Future<void> initialize() async {
     await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: Duration(seconds: 10),
-      minimumFetchInterval: Duration(hours: 1),
+      fetchTimeout: const Duration(seconds: 10),
+      minimumFetchInterval: const Duration(hours: 1),
     ));
     await _remoteConfig.setDefaults({
       'show_full_email': true, // Default value

@@ -1,40 +1,244 @@
-import 'package:flutter/material.dart';
-import 'package:pingolearn/Providers/homescreenprovider.dart';
-import 'package:provider/provider.dart';
+import 'package:pingolearn/Constants/imports.dart';
 
 class Homescreen extends StatefulWidget {
-  const Homescreen({super.key});
+  final RemoteConfigService remoteConfigService;
+
+  const Homescreen({super.key, required this.remoteConfigService});
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
-
   @override
   void initState() {
-    getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getData();
+    });
     super.initState();
   }
 
-  getData(){
-    final homescreenProvider = Provider.of<Homescreenprovider>(listen: false,context);
-    homescreenProvider.fetchComments();
-
+  getData() async {
+    final homescreenProvider =
+    Provider.of<Homescreenprovider>(listen: false, context);
+    await homescreenProvider.fetchComments();
   }
+
+  String maskEmail(String email) {
+    if (widget.remoteConfigService.showFullEmail) {
+      return email;
+    } else {
+      final parts = email.split('@');
+      final namePart = parts[0];
+      final maskedNamePart = namePart.replaceRange(3, namePart.length, '*' * (namePart.length - 3));
+      return '$maskedNamePart@${parts[1]}';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final homescreenProvider = Provider.of<Homescreenprovider>(listen: false,context);
-
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(homescreenProvider.commentsModel?.name ?? "")
-          ],
+      appBar: AppBar(
+        leading: const SizedBox.shrink(),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          "Comments",
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold),
         ),
+        actions: [
+          InkWell(
+            onTap: _showLogoutDialog,
+            child: Container(
+              padding: EdgeInsets.all(8.dg),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.logout_rounded, size: 25.sp,
+                      color: Theme.of(context).colorScheme.error),
+                  SizedBox(width: 5.w),
+                  Text(
+                    "Logout",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w)
+        ],
+      ),
+      body: Consumer<Homescreenprovider>(
+        builder: (context, homescreenProvider, child) {
+          return homescreenProvider.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+              itemCount: homescreenProvider.commentsModel?.length,
+              padding: EdgeInsets.all(10.dg),
+              itemBuilder: (context, index) {
+                final comments = homescreenProvider.commentsModel?[index];
+                return Container(
+                  padding: EdgeInsets.all(10.dg),
+                  margin: EdgeInsets.all(10.dg),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18.r),
+                      color: Theme.of(context).colorScheme.surface),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(20.dg),
+                        decoration: const BoxDecoration(
+                            color: Colors.grey, shape: BoxShape.circle),
+                        child: Text(
+                          comments?.name[0].toUpperCase() ?? "NA",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 22.sp),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Expanded(
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text("Name : ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.grey)),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Expanded(
+                                    child: Text(comments?.name ?? "Name not available",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.grey)),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Email : ",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.grey),
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      maskEmail(comments?.email ?? "Email not available"),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.sp),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                comments?.body ?? "Not Available",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
+                );
+              });
+        },
       ),
     );
   }
+
+  ///LogoutAlertBox
+  Future<void> _showLogoutDialog() async {
+    bool? shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        actionsAlignment: MainAxisAlignment.center,
+        titlePadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r)),
+        title: Container(
+          padding: EdgeInsets.all(10.dg),
+          height: 60.h,
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.r),
+                topRight: Radius.circular(20.r),
+                bottomLeft: Radius.circular(6.r),
+                bottomRight: Radius.circular(6.r),
+              )),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.warning_amber_rounded,
+                  color: Colors.white, size: 28.sp),
+              SizedBox(width: 8.w),
+              Text(
+                'Logout',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Logout',
+                style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout ?? false) {
+      await AuthService.userLogout(context: context);
+    }
+  }
+
 }

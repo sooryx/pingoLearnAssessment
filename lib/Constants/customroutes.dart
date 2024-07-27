@@ -4,38 +4,38 @@ import 'package:pingolearn/Screens/Auth/signinscreen.dart';
 import 'package:pingolearn/Screens/Auth/signupscreen.dart';
 import 'package:pingolearn/Screens/Homepage/homescreen.dart';
 import 'package:pingolearn/Screens/Splashscreen/splashscreen.dart';
-
-final Map<String, WidgetBuilder> routes = {
-  '/': (context) => const SplashScreen(),
-  '/signin': (context) =>  SigninScreen(),
-  '/signup': (context) =>  Signupscreen(),
-  '/homescreen': (context) => const Homescreen(),
-};
+import 'package:pingolearn/Services/RemoteConfigServices/remoteconfigservices.dart';
+import 'package:pingolearn/Widgets/doublebacktoclosetheapp.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
         return PageTransition(
-          child: const SplashScreen(),
+          child: const DoubleTapBackToClose(child: SplashScreen()),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );
       case '/signin':
         return PageTransition(
-          child: SigninScreen(),
+          child:  DoubleTapBackToClose(child: SigninScreen()),
           type: PageTransitionType.topToBottom,
           settings: settings,
         );
       case '/signup':
         return PageTransition(
-          child: Signupscreen(),duration: Duration(milliseconds:200),
+          child:  DoubleTapBackToClose(child: Signupscreen()),
+          duration: const Duration(milliseconds: 200),
           type: PageTransitionType.bottomToTop,
           settings: settings,
         );
       case '/homescreen':
         return PageTransition(
-          child: const Homescreen(),
+          child: DoubleTapBackToClose(
+            child: Homescreen(
+              remoteConfigService: settings.arguments as RemoteConfigService,
+            ),
+          ),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

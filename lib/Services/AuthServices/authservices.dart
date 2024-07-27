@@ -1,26 +1,58 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:pingolearn/Widgets/customtoasts.dart';
+
+import'package:pingolearn/Constants/imports.dart';
+
+
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User?> signInWithEmailPassword(
-      {required BuildContext context, required String email, required String password}) async {
+  Future<User?> signInWithEmailPassword({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-     await customSuccessToast(context,"Login Success");
-     await Navigator.pushNamed(context, "/homescreen");
+      UserCredential result = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await SharedPreferencesManager().setLoggedIn(true);
+      await SharedPreferencesManager().storeLoginData(name: result.user?.displayName ?? "User", email: email);
+      await customSuccessToast(context, "Login Success");
+
+      await Navigator.pushNamed(context, "/homescreen");
+
       return result.user;
+
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      String errorMessage;
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = "The email address is not valid.";
+          break;
+        case 'user-disabled':
+          errorMessage = "This user has been disabled.";
+          break;
+        case 'user-not-found':
+          errorMessage = "No user found with this email.";
+          break;
+        case 'wrong-password':
+          errorMessage = "Incorrect password.";
+          break;
+        default:
+          errorMessage = "Login Failed! ${e.message}";
+          break;
+      }
+      await customErrorToast(context, errorMessage);
+      return null;
     } catch (e) {
-      await customErrorToast(context, "Login Failed! ${e.toString()}");
-      print(e.toString());
+      await customErrorToast(context, "Login Failed! An unknown error occurred.");
       return null;
     }
   }
+
 
   Future<User?> registerWithEmailPassword(
       {required BuildContext context,required String name, required String email, required String password}) async {
@@ -37,8 +69,15 @@ class AuthService {
     } catch (e) {
       await customErrorToast(context, "Registeratio failed !");
 
-      print(e.toString());
       return null;
     }
+  }
+
+  static Future<void>userLogout({
+    required BuildContext context
+})async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    Navigator.pushReplacementNamed(context,'/signin');
   }
 }

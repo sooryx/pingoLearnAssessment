@@ -1,32 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pingolearn/Constants/customthemes.dart';
-import 'package:pingolearn/Services/AuthServices/authservices.dart';
-import 'package:pingolearn/Widgets/custom_textfield.dart';
+import'package:pingolearn/Constants/imports.dart';
+
 
 class Signupscreen extends StatelessWidget {
    Signupscreen({super.key});
 
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.deepgreyColor.withOpacity(0.3),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded,
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .primary),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        leading: const SizedBox.shrink(),
         title: Text(
           "Comments",
           style: Theme
@@ -36,20 +23,23 @@ class Signupscreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.dg),
+        padding: EdgeInsets.symmetric(vertical:25.h,horizontal: 30.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Spacer(),
+            const Spacer(),
             CustomTextField(
               controller: _nameController,
               hintText: "Name",
+              validationType: ValidationType.name,
+
 
             ),
             SizedBox(height: 30.h,),
             CustomTextField(
               controller: _emailController,
               hintText: "Email",
+              validationType: ValidationType.email,
 
             ),
             SizedBox(height: 30.h,),
@@ -57,8 +47,9 @@ class Signupscreen extends StatelessWidget {
               controller: _passwordController,
               hintText: "Password",
               obscureText: true,
+              validationType: ValidationType.password,
             ),
-            Spacer(),
+            const Spacer(),
             InkWell(
               onTap: () {
                 AuthService().registerWithEmailPassword(
@@ -68,35 +59,42 @@ class Signupscreen extends StatelessWidget {
                     email: _emailController.text,
                     password: _passwordController.text);
               },
-              child: Container(
+              child: Material(
+                elevation: 30,
+                borderRadius: BorderRadius.circular(12.r),
+                child: Container(
 
-                  height: 60.h,
-                  width: 220.w,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      color: CustomColors.primaryColor),
-                  child: Center(
-                      child: Text("Signup", style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),))
+                    height: 60.h,
+                    width: 220.w,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        color: CustomColors.primaryColor),
+                    child: Center(
+                        child: Text("Signup", style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.bold,color: Colors.white),))
+                ),
               ),
             ),
-            SizedBox(height: 10.h,),
+            SizedBox(height: 20.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Already have an account ? ", style: Theme
+                Text("Already have an account ?", style: Theme
                     .of(context)
                     .textTheme
                     .bodyMedium
                     ?.copyWith(color: Colors.black),),
                 InkWell(
                   onTap: () {
-                     Navigator.pushNamed(context, "/signin");
+                    _nameController.clear();
+                    _emailController.clear();
+                    _passwordController.clear();
+                    Navigator.pushReplacementNamed(context, "/signin");
                   },
-                  child: Text("Signin", style: Theme
+                  child: Text(" Signin", style: Theme
                       .of(context)
                       .textTheme
                       .bodyMedium
