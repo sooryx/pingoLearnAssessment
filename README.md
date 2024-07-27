@@ -2,33 +2,6 @@
 
 
 
-## Project Structure
-
-The project is organized into the following directories:
-
-
-
-├───Constants
-│ └───[Your constant files]
-├───Models
-│ └───[Your data models]
-├───Providers
-│ └───[Your state management providers]
-├───Screens
-│ ├───Auth
-│ │ └───[Authentication related screens]
-│ ├───Homepage
-│ │ └───[Main homepage screen]
-│ └───Splashscreen
-│ └───[Splash screen]
-├───Services
-│ ├───AuthServices
-│ │ └───[Authentication service logic]
-│ └───RemoteConfigServices
-│ └───[Firebase Remote Config service logic]
-└───Widgets
-└───[Custom widgets used in the app]
-
 
 ## Dependencies
 
