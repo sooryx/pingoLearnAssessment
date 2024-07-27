@@ -71,6 +71,7 @@ class AuthService {
 
       return user;
     } on FirebaseAuthException {
+      Navigator.pop(context);
       await customErrorToast(context, "Registeration failed !");
 
       return null;

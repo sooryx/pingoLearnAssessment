@@ -71,7 +71,6 @@ class _HomescreenState extends State<Homescreen> {
             itemBuilder: (context, index) {
               final comments = homescreenProvider.commentsModel?[index];
               final maskedEmail = maskEmail(comments?.email ?? "Email not available");
-              print("Displaying email: $maskedEmail");
               return Container(
                 margin: EdgeInsets.all(10.dg),
                 child: Material(
@@ -159,8 +158,6 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   String maskEmail(String email) {
-    print("Received email: $email");
-    print("Remote Config: ${widget.remoteConfigService.showFullEmail}");
 
     if (email.isEmpty) {
       return "Email not available";

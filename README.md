@@ -1,16 +1,48 @@
-# pingolearn
+# Comments_App
 
-A new Flutter project.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Project Structure
 
-A few resources to get you started if this is your first Flutter project:
+The project is organized into the following directories:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+├───Constants
+│ └───[Your constant files]
+├───Models
+│ └───[Your data models]
+├───Providers
+│ └───[Your state management providers]
+├───Screens
+│ ├───Auth
+│ │ └───[Authentication related screens]
+│ ├───Homepage
+│ │ └───[Main homepage screen]
+│ └───Splashscreen
+│ └───[Splash screen]
+├───Services
+│ ├───AuthServices
+│ │ └───[Authentication service logic]
+│ └───RemoteConfigServices
+│ └───[Firebase Remote Config service logic]
+└───Widgets
+└───[Custom widgets used in the app]
+
+
+## Dependencies
+
+This project uses the following packages:
+
+- `firebase_core`
+- `firebase_auth`
+- `cloud_firestore`
+- `firebase_remote_config`
+- `provider`
+- `shared_preferences`
+- `flutter_screenutil`
+- `google_fonts`
+- `toastification`
+- `page_transition`
+- `http`
+
