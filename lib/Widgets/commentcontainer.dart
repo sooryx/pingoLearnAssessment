@@ -20,7 +20,7 @@ class CommentContainer extends StatelessWidget {
       margin: EdgeInsets.all(10.dg),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.r),
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
