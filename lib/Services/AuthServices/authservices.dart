@@ -64,10 +64,14 @@ class AuthService {
         'user_name': name,
         'user_email': email,
       });
+      await SharedPreferencesManager().setLoggedIn(true);
+      await SharedPreferencesManager().storeLoginData(name: result.user?.displayName ?? "User", email: email);
       await customSuccessToast(context, "Registered Successfully");
+      await Navigator.pushNamed(context, "/homescreen");
+
       return user;
-    } catch (e) {
-      await customErrorToast(context, "Registeratio failed !");
+    } on FirebaseAuthException {
+      await customErrorToast(context, "Registeration failed !");
 
       return null;
     }

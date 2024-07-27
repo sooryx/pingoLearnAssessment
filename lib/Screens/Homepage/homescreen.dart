@@ -1,4 +1,5 @@
 import 'package:pingolearn/Constants/imports.dart';
+import 'package:pingolearn/Widgets/commentcontainer.dart';
 
 class Homescreen extends StatefulWidget {
   final RemoteConfigService remoteConfigService;
@@ -18,22 +19,7 @@ class _HomescreenState extends State<Homescreen> {
     super.initState();
   }
 
-  getData() async {
-    final homescreenProvider =
-    Provider.of<Homescreenprovider>(listen: false, context);
-    await homescreenProvider.fetchComments();
-  }
 
-  String maskEmail(String email) {
-    if (widget.remoteConfigService.showFullEmail) {
-      return email;
-    } else {
-      final parts = email.split('@');
-      final namePart = parts[0];
-      final maskedNamePart = namePart.replaceRange(3, namePart.length, '*' * (namePart.length - 3));
-      return '$maskedNamePart@${parts[1]}';
-    }
-  }
 
 
   @override
@@ -84,96 +70,16 @@ class _HomescreenState extends State<Homescreen> {
               itemBuilder: (context, index) {
                 final comments = homescreenProvider.commentsModel?[index];
                 return Container(
-                  padding: EdgeInsets.all(10.dg),
                   margin: EdgeInsets.all(10.dg),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18.r),
-                      color: Theme.of(context).colorScheme.surface),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(20.dg),
-                        decoration: const BoxDecoration(
-                            color: Colors.grey, shape: BoxShape.circle),
-                        child: Text(
-                          comments?.name[0].toUpperCase() ?? "NA",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 22.sp),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text("Name : ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.grey)),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: Text(comments?.name ?? "Name not available",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                            fontStyle: FontStyle.italic,
-                                            color: Colors.grey)),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Email : ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.grey),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      maskEmail(comments?.email ?? "Email not available"),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.sp),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                comments?.body ?? "Not Available",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              )
-                            ],
-                          ))
-                    ],
+                  child: Material(
+                    elevation: 5,
+                    borderRadius: BorderRadius.circular(18.r),
+                    color: Colors.white,
+                    child: CommentContainer(
+                      name: comments?.name ?? "Name not available",
+                      email: maskEmail(comments?.email ?? "Email not available"),
+                      body: comments?.body ?? "Not Available",
+                    )
                   ),
                 );
               });
@@ -241,4 +147,20 @@ class _HomescreenState extends State<Homescreen> {
     }
   }
 
+  getData() async {
+    final homescreenProvider =
+    Provider.of<Homescreenprovider>(listen: false, context);
+    await homescreenProvider.fetchComments();
+  }
+
+  String maskEmail(String email) {
+    if (widget.remoteConfigService.showFullEmail) {
+      return email;
+    } else {
+      final parts = email.split('@');
+      final namePart = parts[0];
+      final maskedNamePart = namePart.replaceRange(3, namePart.length, '*' * (namePart.length - 3));
+      return '$maskedNamePart@${parts[1]}';
+    }
+  }
 }

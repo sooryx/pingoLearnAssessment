@@ -1,4 +1,5 @@
 import'package:pingolearn/Constants/imports.dart';
+import 'package:pingolearn/Widgets/custombutton.dart';
 
 
 
@@ -44,41 +45,11 @@ class SigninScreen extends StatelessWidget {
 
             ),
             const Spacer(),
-            InkWell(
+            CustomButton(
+              title: "Login",
               onTap: () async {
-                showLoadingDialog(context, "Logging you in...", );
-              try{
-               await AuthService().signInWithEmailPassword(
-                  context: context,
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                );
-              }catch(e){
-                customErrorToast(context, "Try logging in again");
-              }
+              await login(context:context);
               },
-              child: Material(
-                elevation: 30,
-                borderRadius: BorderRadius.circular(12.r),
-
-                child: Container(
-                  height: 60.h,
-                  width: 220.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    color: CustomColors.primaryColor,
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Login",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.bold,color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
             ),
             SizedBox(height: 20.h),
             Row(
@@ -112,5 +83,18 @@ class SigninScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  login({required BuildContext context}) async{
+    showLoadingDialog(context, "Logging you in...", );
+    try{
+      await AuthService().signInWithEmailPassword(
+        context: context,
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    }catch(e){
+      customErrorToast(context, "Try logging in again");
+    }
   }
 }
