@@ -82,7 +82,7 @@ class CommentContainer extends StatelessWidget {
                     SizedBox(width: 5.w),
                     Expanded(
                       child: Text(
-                        maskEmail(email ?? "Email not available"),
+                       email ?? "Email not available",overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 16.sp,

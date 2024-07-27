@@ -31,9 +31,10 @@ class _HomescreenState extends State<Homescreen> {
         title: Text(
           "Comments",
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold),
+            color: Colors.white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           InkWell(
@@ -65,28 +66,32 @@ class _HomescreenState extends State<Homescreen> {
           return homescreenProvider.isLoading
               ? const Center(child: CircularProgressIndicator())
               : ListView.builder(
-              itemCount: homescreenProvider.commentsModel?.length,
-              padding: EdgeInsets.all(10.dg),
-              itemBuilder: (context, index) {
-                final comments = homescreenProvider.commentsModel?[index];
-                return Container(
-                  margin: EdgeInsets.all(10.dg),
-                  child: Material(
-                    elevation: 5,
-                    borderRadius: BorderRadius.circular(18.r),
-                    color: Colors.white,
-                    child: CommentContainer(
-                      name: comments?.name ?? "Name not available",
-                      email: maskEmail(comments?.email ?? "Email not available"),
-                      body: comments?.body ?? "Not Available",
-                    )
+            itemCount: homescreenProvider.commentsModel?.length,
+            padding: EdgeInsets.all(10.dg),
+            itemBuilder: (context, index) {
+              final comments = homescreenProvider.commentsModel?[index];
+              final maskedEmail = maskEmail(comments?.email ?? "Email not available");
+              print("Displaying email: $maskedEmail");
+              return Container(
+                margin: EdgeInsets.all(10.dg),
+                child: Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(18.r),
+                  color: Colors.white,
+                  child: CommentContainer(
+                    name: comments?.name ?? "Name not available",
+                    email: maskedEmail,
+                    body: comments?.body ?? "Not Available",
                   ),
-                );
-              });
+                ),
+              );
+            },
+          );
         },
       ),
     );
   }
+
 
   ///LogoutAlertBox
   Future<void> _showLogoutDialog() async {
@@ -154,13 +159,24 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   String maskEmail(String email) {
-    if (widget.remoteConfigService.showFullEmail) {
-      return email;
-    } else {
-      final parts = email.split('@');
-      final namePart = parts[0];
-      final maskedNamePart = namePart.replaceRange(3, namePart.length, '*' * (namePart.length - 3));
-      return '$maskedNamePart@${parts[1]}';
+    print("Received email: $email");
+    print("Remote Config: ${widget.remoteConfigService.showFullEmail}");
+
+    if (email.isEmpty) {
+      return "Email not available";
     }
+
+    if (widget.remoteConfigService.showFullEmail) {
+      final parts = email.split('@');
+      if (parts.length == 2) {
+        final namePart = parts[0];
+        final maskedNamePart = namePart.length > 3
+            ? namePart.replaceRange(3, namePart.length, '*' * (namePart.length - 3))
+            : namePart;
+        return '$maskedNamePart@${parts[1]}';
+      }
+    }
+    return email;
   }
+
 }

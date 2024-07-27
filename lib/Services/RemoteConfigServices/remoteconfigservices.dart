@@ -1,4 +1,4 @@
-import'package:pingolearn/Constants/imports.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 class RemoteConfigService {
   final FirebaseRemoteConfig _remoteConfig;
@@ -7,23 +7,30 @@ class RemoteConfigService {
       : _remoteConfig = remoteConfig;
 
   Future<void> initialize() async {
-    await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(seconds: 10),
-      minimumFetchInterval: const Duration(hours: 1),
-    ));
-    await _remoteConfig.setDefaults({
-      'show_full_email': true, // Default value
-    });
-    await _fetchAndActivate();
+    try {
+      await _remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 10),
+        minimumFetchInterval: const Duration(seconds: 10),
+      ));
+      await _remoteConfig.setDefaults({
+        'mask_email': true, // Default value
+      });
+      await _fetchAndActivate();
+    } catch (e) {
+    }
   }
 
   Future<void> _fetchAndActivate() async {
     try {
       await _remoteConfig.fetchAndActivate();
+      final fetchedValue = _remoteConfig.getBool('mask_email');
     } catch (e) {
-      print(e.toString());
+
     }
   }
 
-  bool get showFullEmail => _remoteConfig.getBool('show_full_email');
+  bool get showFullEmail {
+    final value = _remoteConfig.getBool('mask_email');
+    return value;
+  }
 }

@@ -28,8 +28,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-
     return ScreenUtilInit(
+
       designSize: const Size(411.42857142857144, 843.4285714285714),
       builder: (context, child) {
         return MultiProvider(
