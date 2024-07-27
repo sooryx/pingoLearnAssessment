@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:pingolearn/Constants/imports.dart';
 
 class DoubleTapBackToClose extends StatefulWidget {
   final Widget child;
@@ -12,6 +12,18 @@ class DoubleTapBackToClose extends StatefulWidget {
 class _DoubleTapBackToCloseState extends State<DoubleTapBackToClose> {
   DateTime? lastPressed;
 
+  final snackBar = SnackBar(
+    elevation: 6.0,
+    margin: EdgeInsets.symmetric(vertical:10.h,horizontal: 90.w),
+    backgroundColor: Colors.black54,
+    behavior: SnackBarBehavior.floating,
+    content: const Text(
+      "Tap again to exit",
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.white),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -21,13 +33,8 @@ class _DoubleTapBackToCloseState extends State<DoubleTapBackToClose> {
         final isWarning = lastPressed == null || now.difference(lastPressed!) > maxDuration;
 
         if (isWarning) {
-          lastPressed = DateTime.now();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Press back again to exit'),
-              duration: maxDuration,
-            ),
-          );
+          lastPressed = now;
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           return false;
         } else {
           return true;
